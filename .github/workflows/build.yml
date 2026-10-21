@@ -27,7 +27,7 @@ jobs:
           <dict>
               <key>CFBundleExecutable</key><string>TestApp</string>
               <key>CFBundleIdentifier</key><string>com.yourname.testapp</string>
-              <key>CFBundleName</key><string>TestApp</string>
+              <key>CFBundleName</key><string>小龙生自动抢单</string>
               <key>CFBundleVersion</key><string>1.0</string>
               <key>CFBundlePackageType</key><string>APPL</string>
               <key>MinimumOSVersion</key><string>14.0</string>
