@@ -14,7 +14,6 @@ jobs:
       - name: Compile App Binary
         run: |
           xcrun -sdk iphoneos swiftc App/main.swift -o TestApp -target arm64-apple-ios14.0
-          # 关键修改：建到 var/jb/Applications 目录下
           mkdir -p build_dir/var/jb/Applications/TestApp.app
           mv TestApp build_dir/var/jb/Applications/TestApp.app/TestApp
 
@@ -28,6 +27,7 @@ jobs:
               <key>CFBundleExecutable</key><string>TestApp</string>
               <key>CFBundleIdentifier</key><string>com.yourname.testapp</string>
               <key>CFBundleName</key><string>小龙生自动抢单</string>
+              <key>CFBundleDisplayName</key><string>小龙生自动抢单</string>
               <key>CFBundleVersion</key><string>1.0</string>
               <key>CFBundlePackageType</key><string>APPL</string>
               <key>MinimumOSVersion</key><string>14.0</string>
@@ -40,14 +40,20 @@ jobs:
           mkdir -p build_dir/DEBIAN
           cat << 'EOF' > build_dir/DEBIAN/control
           Package: com.yourname.testapp
-          Name: TestApp
+          Name: 小龙生自动抢单
           Version: 1.0
           Architecture: iphoneos-arm64
-          Description: 测试APP
+          Description: 小龙生自动抢单设置
           Maintainer: yourname
           Author: yourname
           Section: Applications
           EOF
+
+      - name: Add Tweak Files
+        run: |
+          mkdir -p build_dir/var/jb/Library/MobileSubstrate/DynamicLibraries
+          echo '{ Filter = { Bundles = ( "com.huolala.hll" ); }; }' > build_dir/var/jb/Library/MobileSubstrate/DynamicLibraries/GrabTweak.plist
+          echo "fake" > build_dir/var/jb/Library/MobileSubstrate/DynamicLibraries/GrabTweak.dylib
 
       - name: Build Deb
         run: |
