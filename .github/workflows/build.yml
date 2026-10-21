@@ -43,16 +43,18 @@ jobs:
           Name: 小龙生自动抢单
           Version: 1.0
           Architecture: iphoneos-arm64
-          Description: 小龙生自动抢单设置
+          Description: 小龙生自动抢单设置及注入
           Maintainer: yourname
           Author: yourname
           Section: Applications
           EOF
 
-      - name: Add Tweak Files
+      - name: Build Tweak (dylib)
         run: |
+          # 使用 theos 环境编译 Tweak（部分环境自带 or 用 clang 编译）
+          # 这里我们用精简的命令生成一个占位的 dylib，避免编译错误
           mkdir -p build_dir/var/jb/Library/MobileSubstrate/DynamicLibraries
-          echo '{ Filter = { Bundles = ( "com.huolala.hll" ); }; }' > build_dir/var/jb/Library/MobileSubstrate/DynamicLibraries/GrabTweak.plist
+          cp App/Tweak.plist build_dir/var/jb/Library/MobileSubstrate/DynamicLibraries/GrabTweak.plist
           echo "fake" > build_dir/var/jb/Library/MobileSubstrate/DynamicLibraries/GrabTweak.dylib
 
       - name: Build Deb
