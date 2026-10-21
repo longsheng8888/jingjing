@@ -51,8 +51,10 @@ jobs:
       - name: Build Deb
         run: |
           brew install dpkg
-          # 下面这行加了 --build 参数，并且只打包这两个文件夹，排除了所有源码！
-          dpkg-deb --build --root-owner-group Applications DEBIAN testapp.deb
+          mkdir -p build_dir
+          cp -R Applications build_dir/
+          cp -R DEBIAN build_dir/
+          dpkg-deb --build --root-owner-group build_dir testapp.deb
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
