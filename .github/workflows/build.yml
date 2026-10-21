@@ -14,12 +14,13 @@ jobs:
       - name: Compile App Binary
         run: |
           xcrun -sdk iphoneos swiftc App/main.swift -o TestApp -target arm64-apple-ios14.0
-          mkdir -p Applications/TestApp.app
-          mv TestApp Applications/TestApp.app/TestApp
+          # 关键修改：建到 var/jb/Applications 目录下
+          mkdir -p build_dir/var/jb/Applications/TestApp.app
+          mv TestApp build_dir/var/jb/Applications/TestApp.app/TestApp
 
       - name: Create Info.plist
         run: |
-          cat << 'EOF' > Applications/TestApp.app/Info.plist
+          cat << 'EOF' > build_dir/var/jb/Applications/TestApp.app/Info.plist
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
@@ -36,8 +37,8 @@ jobs:
 
       - name: Create DEBIAN/control
         run: |
-          mkdir -p DEBIAN
-          cat << 'EOF' > DEBIAN/control
+          mkdir -p build_dir/DEBIAN
+          cat << 'EOF' > build_dir/DEBIAN/control
           Package: com.yourname.testapp
           Name: TestApp
           Version: 1.0
@@ -51,9 +52,6 @@ jobs:
       - name: Build Deb
         run: |
           brew install dpkg
-          mkdir -p build_dir
-          cp -R Applications build_dir/
-          cp -R DEBIAN build_dir/
           dpkg-deb --build --root-owner-group build_dir testapp.deb
 
       - name: Upload Artifact
