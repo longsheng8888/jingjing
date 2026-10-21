@@ -1,0 +1,60 @@
+name: Build iOS Deb
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Compile App Binary
+        run: |
+          xcrun -sdk iphoneos swiftc App/main.swift -o TestApp -target arm64-apple-ios14.0
+          mkdir -p Applications/TestApp.app
+          mv TestApp Applications/TestApp.app/TestApp
+
+      - name: Create Info.plist
+        run: |
+          cat << 'EOF' > Applications/TestApp.app/Info.plist
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>CFBundleExecutable</key><string>TestApp</string>
+              <key>CFBundleIdentifier</key><string>com.yourname.testapp</string>
+              <key>CFBundleName</key><string>TestApp</string>
+              <key>CFBundleVersion</key><string>1.0</string>
+              <key>CFBundlePackageType</key><string>APPL</string>
+              <key>MinimumOSVersion</key><string>14.0</string>
+          </dict>
+          </plist>
+          EOF
+
+      - name: Create DEBIAN/control
+        run: |
+          mkdir -p DEBIAN
+          cat << 'EOF' > DEBIAN/control
+          Package: com.yourname.testapp
+          Name: TestApp
+          Version: 1.0
+          Architecture: iphoneos-arm64
+          Description: 测试APP
+          Maintainer: yourname
+          Author: yourname
+          Section: Applications
+          EOF
+
+      - name: Build Deb
+        run: |
+          brew install dpkg
+          dpkg-deb -b . testapp.deb
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: TestApp-Deb
+          path: testapp.deb
