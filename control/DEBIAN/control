@@ -1,8 +1,0 @@
-Package: com.yourname.testapp
-Name: TestApp
-Version: 1.0
-Architecture: iphoneos-arm64
-Description: TestApp
-Maintainer: yourname
-Author: yourname
-Section: Applications
