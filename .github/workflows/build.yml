@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Compile App Binary
         run: |
@@ -54,7 +54,7 @@ jobs:
           dpkg-deb -b . testapp.deb
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: TestApp-Deb
           path: testapp.deb
